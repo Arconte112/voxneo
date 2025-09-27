@@ -89,7 +89,13 @@ function OverlayApp(): JSX.Element {
       nextVolumes[index] = normalized;
     }
 
-    setVolumes(nextVolumes);
+    setVolumes((prev) => {
+      if (!prev.length) {
+        return nextVolumes;
+      }
+      return nextVolumes.map((value, index) => prev[index] * 0.65 + value * 0.35);
+    });
+
     animationFrame.current = requestAnimationFrame(updateVolumeBars);
   };
 
@@ -369,7 +375,7 @@ function OverlayApp(): JSX.Element {
         <div
           key={index}
           className="wave-bar"
-          style={{ transform: `scaleY(${Math.max(0.18, value)})` }}
+          style={{ height: `${Math.max(18, Math.round(value * 100))}%` }}
         />
       )),
     [volumes]

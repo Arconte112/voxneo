@@ -1,0 +1,84 @@
+{
+  "name": "voxneo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Electron app for Groq Whisper transcription with overlay and history.",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:main": "tsc -w --project tsconfig.main.json",
+    "dev:renderer": "npx vite dev --host 127.0.0.1 --port 5174 --strictPort",
+    "build": "npm run build:main && npm run build:renderer",
+    "build:main": "tsc --project tsconfig.main.json",
+    "build:renderer": "vite build",
+    "start": "npm run build && electron .",
+    "lint": "eslint . --ext .ts,.tsx",
+    "pack": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "dev:electron": "npx wait-on dist/main/main.js dist/preload/index.js && npx nodemon --watch dist/main --watch dist/preload --exec \"npx electron .\"",
+    "rebuild:native": "npx electron-builder install-app-deps",
+    "postinstall": "npm run rebuild:native"
+  },
+  "build": {
+    "appId": "com.voxneo.app",
+    "productName": "Voxneo",
+    "asar": true,
+    "files": [
+      "dist/**/*",
+      "package.json",
+      ".env",
+      "assets/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "requestedExecutionLevel": "asInvoker",
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true
+    },
+    "icon": "assets/icon.png"
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "better-sqlite3": "^9.1.1",
+    "dotenv": "^16.4.1",
+    "electron-store": "^8.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^20.11.20",
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^8.2.2",
+    "electron": "^30.0.6",
+    "electron-builder": "^24.13.3",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.33.2",
+    "nodemon": "^3.0.3",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.0",
+    "wait-on": "^7.0.1"
+  },
+  "optionalDependencies": {
+    "@nut-tree/nut-js": "^4.3.0"
+  }
+}

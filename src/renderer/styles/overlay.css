@@ -1,0 +1,141 @@
+:root {
+  color-scheme: dark;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.overlay-container {
+  width: 168px;
+  height: 88px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(5, 5, 7, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(48px);
+  opacity: 0;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.22s ease;
+}
+
+.overlay-container.overlay--visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.overlay-container.overlay--visible.overlay--closing {
+  transform: translateY(64px);
+  opacity: 0;
+}
+
+.overlay-container.overlay--processing,
+.overlay-container.overlay--result,
+.overlay-container.overlay--error {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.waveform {
+  width: 100%;
+  height: 56px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+}
+
+.wave-bar {
+  width: 6px;
+  border-radius: 999px;
+  background: #ffffff;
+  opacity: 0.88;
+  transform-origin: center bottom;
+  transition: transform 0.12s ease-out, opacity 0.18s ease;
+}
+
+.loader {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-top-color: #ffffff;
+  animation: spin 0.72s linear infinite;
+}
+
+.checkmark {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.checkmark::after {
+  content: '';
+  width: 14px;
+  height: 26px;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  transform: rotate(45deg) translate(-1px, -2px);
+}
+
+.error-indicator {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  position: relative;
+}
+
+.error-indicator::before,
+.error-indicator::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 23px;
+  width: 2px;
+  height: 24px;
+  background: #ffffff;
+  border-radius: 99px;
+}
+
+.error-indicator::before {
+  transform: rotate(45deg);
+}
+
+.error-indicator::after {
+  transform: rotate(-45deg);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

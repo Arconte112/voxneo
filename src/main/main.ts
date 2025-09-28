@@ -32,10 +32,11 @@ let overlayReady = false;
 let pendingOverlayStart: AppSettings | null = null;
 
 const db = new TranscriptDatabase();
+const initialSettings = settingsStore.get();
 const transcriber = new GroqTranscriber({
-  apiKey: process.env.GROQ_API_KEY ?? '',
-  language: settingsStore.get().language,
-  model: settingsStore.get().model
+  apiKey: initialSettings.groqApiKey,
+  language: initialSettings.language,
+  model: initialSettings.model
 });
 
 function resolveRendererPath(file: string): string {
@@ -397,7 +398,7 @@ ipcMain.handle('settings:get', async () => {
 ipcMain.handle('settings:save', async (_event, partial: Partial<AppSettings>) => {
   const updated = settingsStore.update(partial);
   transcriber.update({
-    apiKey: process.env.GROQ_API_KEY ?? '',
+    apiKey: updated.groqApiKey,
     language: updated.language,
     model: updated.model
   });

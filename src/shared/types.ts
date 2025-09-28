@@ -27,6 +27,7 @@ export type AppSettings = {
   autoPaste: boolean;
   deviceId: string | null;
   launchOnStartup: boolean;
+  groqApiKey: string;
 };
 
 export type TranscriptionRequest = {

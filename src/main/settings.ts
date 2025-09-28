@@ -12,7 +12,8 @@ const DEFAULT_SETTINGS: AppSettings = {
   hotkey: 'Ctrl+Space',
   autoPaste: true,
   deviceId: null,
-  launchOnStartup: false
+  launchOnStartup: false,
+  groqApiKey: process.env.GROQ_API_KEY ?? ''
 };
 
 class SettingsStore {
@@ -32,7 +33,8 @@ class SettingsStore {
       hotkey: this.store.get('hotkey') ?? DEFAULT_SETTINGS.hotkey,
       autoPaste: this.store.get('autoPaste') ?? DEFAULT_SETTINGS.autoPaste,
       deviceId: this.store.get('deviceId') ?? DEFAULT_SETTINGS.deviceId,
-      launchOnStartup: this.store.get('launchOnStartup') ?? DEFAULT_SETTINGS.launchOnStartup
+      launchOnStartup: this.store.get('launchOnStartup') ?? DEFAULT_SETTINGS.launchOnStartup,
+      groqApiKey: this.store.get('groqApiKey') ?? DEFAULT_SETTINGS.groqApiKey
     };
   }
 

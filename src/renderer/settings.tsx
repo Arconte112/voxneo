@@ -86,7 +86,8 @@ function SettingsApp(): JSX.Element {
     setSaving(true);
     setMessage(null);
     try {
-      const updated = await window.electronAPI.saveSettings(settings);
+      const payload = { ...settings, groqApiKey: settings.groqApiKey.trim() };
+      const updated = await window.electronAPI.saveSettings(payload);
       setSettings(updated);
       setMessage('Ajustes guardados');
     } catch (error) {
@@ -142,6 +143,18 @@ function SettingsApp(): JSX.Element {
                 <option value={settings.language}>{settings.language}</option>
               ) : null}
             </select>
+          </label>
+          <label>
+            Clave API de Groq
+            <input
+              type="password"
+              value={settings.groqApiKey}
+              onChange={(event) => updateSetting('groqApiKey', event.target.value)}
+              placeholder="sk_xxxx"
+              autoComplete="off"
+              spellCheck={false}
+            />
+            <small className="settings-hint">Se usa para autenticar las transcripciones.</small>
           </label>
           <label>
             Atajo global

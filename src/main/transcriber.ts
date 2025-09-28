@@ -26,7 +26,7 @@ export class GroqTranscriber {
   }
 
   update(options: Partial<Omit<TranscriptionOptions, 'apiKey'>> & { apiKey?: string }): void {
-    if (options.apiKey) this.apiKey = options.apiKey;
+    if (options.apiKey !== undefined) this.apiKey = options.apiKey;
     if (options.language) this.language = options.language;
     if (options.model) this.model = options.model;
     if (options.timeoutMs) this.timeoutMs = options.timeoutMs;

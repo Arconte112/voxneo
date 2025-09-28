@@ -4,7 +4,7 @@ import type { AppSettings } from '@shared/types';
 
 type OverlayPhase = 'idle' | 'listening' | 'processing' | 'result' | 'error';
 
-const BAR_COUNT = 14;
+const BAR_COUNT = 15;
 const TARGET_SAMPLE_RATE = 16_000;
 const ZERO_BARS = new Array(BAR_COUNT).fill(0);
 const EXIT_ANIMATION_MS = 260;
@@ -85,15 +85,16 @@ function OverlayApp(): JSX.Element {
         bucketSum += frequencyData[Math.min(dataIndex, frequencyData.length - 1)];
       }
       const average = bucketSum / bucketSize;
-      const normalized = Math.max(0.12, Math.min(1, average / 160));
-      nextVolumes[index] = normalized;
+      const normalized = Math.min(1, average / 95);
+      const eased = Math.max(0.06, Math.pow(normalized, 0.65));
+      nextVolumes[index] = eased;
     }
 
     setVolumes((prev) => {
       if (!prev.length) {
         return nextVolumes;
       }
-      return nextVolumes.map((value, index) => prev[index] * 0.65 + value * 0.35);
+      return nextVolumes.map((value, index) => prev[index] * 0.38 + value * 0.62);
     });
 
     animationFrame.current = requestAnimationFrame(updateVolumeBars);
@@ -128,7 +129,7 @@ function OverlayApp(): JSX.Element {
       const source = audioContext.createMediaStreamSource(stream);
       const analyser = audioContext.createAnalyser();
       analyser.fftSize = 2048;
-      analyser.smoothingTimeConstant = 0.6;
+      analyser.smoothingTimeConstant = 0.32;
       analyser.minDecibels = -90;
       analyser.maxDecibels = -10;
       analyserRef.current = analyser;
@@ -369,17 +370,31 @@ function OverlayApp(): JSX.Element {
     }
   }, [phase]);
 
-  const bars = useMemo(
-    () =>
-      volumes.map((value, index) => (
-        <div
-          key={index}
-          className="wave-bar"
-          style={{ height: `${Math.max(18, Math.round(value * 100))}%` }}
-        />
-      )),
-    [volumes]
-  );
+  const bars = useMemo(() => {
+    if (volumes.length < 3) {
+      return null;
+    }
+
+    const midpoint = Math.floor(volumes.length / 2);
+    const left = volumes.slice(0, midpoint);
+    const center = volumes[midpoint];
+    const right = volumes.slice(midpoint + 1);
+
+    const paired = left.map((value, index) => {
+      const mirrored = right[right.length - 1 - index] ?? value;
+      return (value + mirrored) / 2;
+    });
+
+    const displayValues = [...paired.slice().reverse(), center, ...paired];
+
+    return displayValues.map((value, index) => (
+      <div
+        key={index}
+        className="wave-bar"
+        style={{ height: `${Math.max(18, Math.round(value * 100))}%` }}
+      />
+    ));
+  }, [volumes]);
 
   let content: JSX.Element | null = null;
   if (phase === 'listening') {

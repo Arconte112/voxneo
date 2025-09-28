@@ -25,6 +25,7 @@ declare global {
       onHistoryRefresh(callback: () => void): Unsubscribe;
       copyToClipboard(text: string): void;
       showHistory(): void;
+      minimizeDashboard(): void;
       openSettings(): void;
       openPrivacyPolicy(): void;
     };

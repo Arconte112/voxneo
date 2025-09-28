@@ -75,6 +75,9 @@ const electronAPI = {
   showHistory(): void {
     ipcRenderer.send('history:show');
   },
+  minimizeDashboard(): void {
+    ipcRenderer.send('history:minimize');
+  },
   openSettings(): void {
     ipcRenderer.send('settings:open');
   },

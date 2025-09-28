@@ -105,11 +105,18 @@ function createHistoryWindow(): BrowserWindow {
   }
 
   historyWindow = new BrowserWindow({
-    width: 640,
-    height: 480,
+    width: 920,
+    height: 640,
     show: false,
-    resizable: true,
-    title: 'Historial de transcripciones',
+    resizable: false,
+    maximizable: false,
+    fullscreenable: false,
+    frame: false,
+    transparent: false,
+    hasShadow: true,
+    backgroundColor: '#0b0b0f',
+    skipTaskbar: true,
+    title: 'Dashboard de transcripciones',
     icon: getAssetPath('icon-256.png'),
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
@@ -120,6 +127,9 @@ function createHistoryWindow(): BrowserWindow {
   });
 
   historyWindow.setMenu(null);
+  historyWindow.setSkipTaskbar(true);
+  historyWindow.setMinimumSize(920, 640);
+  historyWindow.setMaximumSize(920, 640);
   loadWindowURL(historyWindow, 'history.html');
   historyWindow.on('closed', () => {
     historyWindow = null;
@@ -138,6 +148,11 @@ function createSettingsWindow(): BrowserWindow {
     height: 460,
     resizable: false,
     show: false,
+    frame: false,
+    transparent: false,
+    hasShadow: true,
+    backgroundColor: '#0b0b0f',
+    skipTaskbar: true,
     title: 'Ajustes',
     icon: getAssetPath('icon-256.png'),
     webPreferences: {
@@ -149,6 +164,9 @@ function createSettingsWindow(): BrowserWindow {
   });
 
   settingsWindow.setMenu(null);
+  settingsWindow.setSkipTaskbar(true);
+  settingsWindow.setMinimumSize(520, 460);
+  settingsWindow.setMaximumSize(520, 460);
   loadWindowURL(settingsWindow, 'settings.html');
   settingsWindow.on('closed', () => {
     settingsWindow = null;
@@ -169,7 +187,7 @@ function loadWindowURL(window: BrowserWindow, file: string): void {
 function registerTray(): void {
   const trayIcon = nativeImage.createFromPath(getAssetPath('icon-tray.png'));
   tray = new Tray(trayIcon);
-  tray.setToolTip('Voxneo — Historial y control');
+  tray.setToolTip('Voxneo — Dashboard y control');
 
   tray.on('double-click', () => {
     const window = createHistoryWindow();
@@ -179,7 +197,7 @@ function registerTray(): void {
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Mostrar historial',
+      label: 'Abrir dashboard',
       click: () => {
         const window = createHistoryWindow();
         window.show();
@@ -448,6 +466,13 @@ ipcMain.on('history:show', () => {
   const window = createHistoryWindow();
   window.show();
   window.focus();
+});
+
+ipcMain.on('history:minimize', () => {
+  if (!historyWindow) {
+    historyWindow = createHistoryWindow();
+  }
+  historyWindow?.minimize();
 });
 
 ipcMain.on('settings:open', () => {
